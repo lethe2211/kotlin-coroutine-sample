@@ -1,4 +1,4 @@
-# Store Gradle cache so that it won't download the depencencies again and again
+# Store Gradle cache so that it won't download the dependencies again and again
 # This stage takes a little long time if the image cache is not yet available
 FROM gradle:6.7.1-jdk11 AS cache
 WORKDIR /opt/app
