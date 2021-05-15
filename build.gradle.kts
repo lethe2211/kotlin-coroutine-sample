@@ -18,12 +18,22 @@ repositories {
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
 
+    // Kotlin Coroutine
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3")
+
+    // Coroutine test library
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.4.3")
+
     // JUnit 5
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.0")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.1")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.7.1")
+
+    // Mockito
+    testImplementation("org.mockito:mockito-core:3.10.0")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:3.2.0")
 
     // MockK
-    testImplementation("io.mockk:mockk:1.10.3")
+    testImplementation("io.mockk:mockk:1.11.0")
 }
 
 application {
