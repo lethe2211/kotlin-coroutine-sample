@@ -1,4 +1,4 @@
-# A simple template for me to start Kotlin development
+# Kotlin Coroutines samples
 
 ## Dependencies
 * JDK 11
