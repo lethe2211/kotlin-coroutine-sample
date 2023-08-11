@@ -55,7 +55,7 @@ class CoroutineSample {
             val job = launch { // Job
                 println("1")
                 delay(1000L)
-                print("2")
+                println("2")
             }
             job.join()
         }
@@ -63,19 +63,69 @@ class CoroutineSample {
 
     fun `Wait until Coroutines are completed by async and await`() {
         runBlocking {
-            val deffered1 = async { // Deferred<Int>
+            println(Thread.currentThread().name)
+            val deferred1 = async(Dispatchers.IO) { // Deferred<Int>
+                println(Thread.currentThread().name)
+                println("1")
                 delay(1000L)
+                println("2")
                 1
             }
-            val deffered2 = async { // Deferred<Int>
+            println(deferred1) // Deferred object will be returned before the suspend function finishes
+            val deferred2 = async(Dispatchers.IO) { // Deferred<Int>
+                println(Thread.currentThread().name)
+                println("3")
                 delay(2000L)
+                println("4")
                 2
             }
-            println(deffered1.await() + deffered2.await())
-            println(awaitAll(deffered1, deffered2)) // Return the list of returned value
+            println(deferred2)
+            println(deferred1.await() + deferred2.await()) // Wait until Deferred object is completed
+            println(awaitAll(deferred1, deferred2)) // Wait until all the Deferred objects are completed and return the list of returned value
 
+            // main
+            // DefaultDispatcher-worker-1
+            // 1
+            // DeferredCoroutine{Active}@d9a1d755
+            // DeferredCoroutine{Active}@1d736af5
+            // DefaultDispatcher-worker-3
+            // 3
+            // 2
+            // 4
             // 3
             // [1, 2]
+        }
+    }
+
+    fun `Wait until Coroutines are completed by withContext`() {
+        runBlocking {
+            println(Thread.currentThread().name)
+            val one = withContext(Dispatchers.IO) {
+                println(Thread.currentThread().name)
+                println("1")
+                delay(2000L)
+                println("2")
+                1
+            }
+            println(one) // Wait until the previous Coroutine finishes
+            val two = withContext(Dispatchers.IO) {
+                println(Thread.currentThread().name)
+                println("3")
+                delay(1000L)
+                println("4")
+                2
+            }
+            println(two)
+
+            // main
+            // DefaultDispatcher-worker-1
+            // 1
+            // 2
+            // 1
+            // DefaultDispatcher-worker-1
+            // 3
+            // 4
+            // 2
         }
     }
 
@@ -202,9 +252,33 @@ class CoroutineSample {
 
         // result: error
     }
+
+    fun `suspend function inside Coroutine will be executed in sequence`() {
+        runBlocking {
+            func1()
+            func2()
+        }
+
+        // 1
+        // 2
+        // 3
+        // 4
+    }
+
+    suspend fun func1() {
+        println("1")
+        delay(2000L)
+        println("2")
+    }
+
+    suspend fun func2() {
+        println("3")
+        delay(1000L)
+        println("4")
+    }
 }
 
 fun main() {
     val cs = CoroutineSample()
-    cs.`Wait until Coroutines are completed by async and await`()
+    cs.`suspend function inside Coroutine will be executed in sequence`()
 }
